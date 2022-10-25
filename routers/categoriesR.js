@@ -10,7 +10,7 @@ routers.get(`/`, async(req,res)=>{
     if(!categoryList){
         res.status(500).json({succes: false})
     }
-    res.send(categoryList);
+    res.send.status(200).send(categoryList);
 })
 
 routers.post('/', async (req, res)=>{
