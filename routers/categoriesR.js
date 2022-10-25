@@ -45,8 +45,26 @@ routers.get('/:id', async (req, res)=>{
     if(categoryfound){
         return res.status(200).json({succes: true, categoryfound})
     }else{
-        return res.status(404).json({succes: false, message: 'categories pas trouve'})
+        return res.status(404).json({succes: false, message: 'categories pas trouve !!'})
     }
 })
+
+routers.put('/:id' , async (req,res)=>{
+    let categorymody = await Category.findOneAndUpdate(
+        req.body.id,
+            {
+                name: req.body.name,
+                icon: req.body.icon,
+                color: req.body.color
+            },
+            {new : true}
+        );
+    if(!categorymody){
+        return res.status(404).json({succes: false, message: 'categorie pas trouvee !!'})
+    }else{
+        return res.status(200).json({succes: true, categorymody})
+    }
+})
+
 
 module.exports = routers;
