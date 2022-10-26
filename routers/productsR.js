@@ -1,5 +1,6 @@
 const {Product} = require('../models/product')
 const express = require('express');
+const { Category } = require('../models/category');
 const routers = express.Router();
 
 
@@ -13,23 +14,33 @@ routers.get(`/`, async (req, res) => {
     res.send(productList)
 })
 
-routers.post(`/`, (req, res) => {
+routers.post(`/`, async (req, res) => {
+    const categoryatrouve = await Category.findById(req.body.category);
+
+    if(!categoryatrouve){
+        return res.status(400).send('Invalid Category')
+    }
+
     const product = new Product({
         name: req.body.name,
+        description: req.body.description,
+        richDescription: req.body.richDescription,
         image: req.body.image,
-        quantity: req.body.quantity
-        })
-            
-        product.save()
-        .then((createprod)=>{
-         res.status(201).json(createprod)
-        })
-        .catch((err)=>{
-         res.status(500).json({
-            error: err,
-            succes: false
-        })
-    })
+        brand: req.body.brand,
+        price: req.body.price,
+        category: req.body.category,
+        quantity: req.body.quantity,
+        rating: req.body.rating,
+        numReviews: req.body.numReviews,
+        isFeatured: req.body.isFeatured
+        })  
+
+    productcreat =  await product.save();
+    if(!productcreat){
+        return res.status(500).json({succes: false, message: "le produit n\'est pas cree"})
+    }else{
+        return res.status(201).json({succes: true, productcreat})
+    }
 })
 
 module.exports = routers;  

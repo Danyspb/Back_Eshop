@@ -3,7 +3,7 @@ const express = require('express');
 const routers = express.Router();
 
 
-
+/// get all categorie
 routers.get(`/`, async(req,res)=>{
     const categoryList = await Category.find();
 
@@ -13,6 +13,7 @@ routers.get(`/`, async(req,res)=>{
     res.send.status(200).send(categoryList);
 })
 
+//// put a new categorie
 routers.post('/', async (req, res)=>{
     let category = new Category({
         name: req.body.name,
@@ -27,6 +28,8 @@ routers.post('/', async (req, res)=>{
     }
 })
 
+
+//// delete one categories
 routers.delete('/:id', async (req,res)=>{
     Category.findByIdAndRemove(req.params.id).then(category =>{
         if(category){
@@ -40,6 +43,8 @@ routers.delete('/:id', async (req,res)=>{
     })
 })
 
+
+//// get one categorie details
 routers.get('/:id', async (req, res)=>{
     let categoryfound = await Category.findById(req.params.id);
     if(categoryfound){
@@ -49,6 +54,7 @@ routers.get('/:id', async (req, res)=>{
     }
 })
 
+///// update categorie
 routers.put('/:id' , async (req,res)=>{
     let categorymody = await Category.findOneAndUpdate(
         req.body.id,
