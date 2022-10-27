@@ -5,7 +5,7 @@ const routers = express.Router();
 
 
 routers.get(`/`, async (req, res) => {
-    const productList = await Product.find();
+    const productList = await Product.find().select('-_id brand name price quantity');
 
     if(!productList){
         res.status(500).json({succes: false})
