@@ -5,7 +5,7 @@ const routers = express.Router();
 
 
 routers.get(`/`, async (req, res) => {
-    const productList = await Product.find().select('-_id brand name price quantity');
+    const productList = await Product.find().populate('category');
 
     if(!productList){
         res.status(500).json({succes: false})
@@ -45,7 +45,7 @@ routers.post(`/`, async (req, res) => {
 
 
 routers.get('/:id', async (req, res)=>{
-    let prodtrouv = await Product.findById(req.params.id)
+    let prodtrouv = await Product.findById(req.params.id).populate('category');
     if(!prodtrouv){
         return res.status(404).json({succes: false, mesage: 'le produit n\'existe pas' })
     }else{
@@ -67,7 +67,7 @@ routers.delete('/:id', async (req,res)=>{
 routers.put('/:id', async (req,res)=>{
     let prodfi = Product.findById(req.params.id)
     if(!prodfi){
-        return res.status(500).send('Produit invalide')
+        return res.status(400).send('Produit invalide')
     }
     let produpd = await Product.findByIdAndUpdate(
         req.params.id,
@@ -87,7 +87,7 @@ routers.put('/:id', async (req,res)=>{
         {new : true}
     )
     if(produpd){
-        return res.status(200).json({succes: true, message: 'produit modifier avec succes', produpd})
+        return res.status(201).json({succes: true, message: 'produit modifier avec succes', produpd})
     }else{
         return res.status(500).json({succes: false, message: 'produit non modiifier du a une erreur'})
     }
