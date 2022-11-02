@@ -15,6 +15,22 @@ routers.get(`/`, async (req, res) => {
     res.send(productList)
 })
 
+////// avoir les produits par categories ///////
+routers.get(`/bycategories`, async (req, res) => {
+    
+    if(req.query.categories){
+       var filter = {category: req.query.categories.split(',')}
+    }
+    const prodbycat = await Product.find(filter).populate('category');
+
+    if(!prodbycat){
+        res.status(500).json({succes: false})
+    }
+
+    res.send(prodbycat)
+})
+
+
 routers.post(`/`, async (req, res) => {
     const categoryatrouve = await Category.findById(req.body.category);
 
@@ -108,5 +124,15 @@ routers.get('/get/count', async (req, res)=>{
     }
 })
 
+////// avoir nombre de produit dont la feature est true  ////// 
+routers.get('/get/feature/:count', async (req, res)=>{
+    let count = req.params.count ? req.params.count : 0
+    let prodFeatur = await Product.find({isFeatured: true}).limit(count)
+    if(!prodFeatur){
+        return res.status(404).json({succes: false, mesage: 'le produit n\'existe pas' })
+    }else{
+        res.send(prodFeatur)
+    }
+})
 
 module.exports = routers;

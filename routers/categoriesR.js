@@ -4,13 +4,13 @@ const routers = express.Router();
 
 
 /// get all categorie
-routers.get(`/`, async(req,res)=>{
-    const categoryList = await Category.find();
-
-    if(!categoryList){
-        res.status(500).json({succes: false})
+routers.get('/', async (req, res)=>{
+    let catlist = await Category.find();
+    if(!catlist){
+        res.status(400).json({succes: false, message: 'il y\'a une erreur '})
+    }else{
+        res.status(200).send(catlist)
     }
-    res.send.status(200).send(categoryList);
 })
 
 //// put a new categorie
