@@ -2,6 +2,7 @@ const {Product} = require('../models/product')
 const express = require('express');
 const { Category } = require('../models/category');
 const routers = express.Router();
+const mongoose = require('mongoose');
 
 
 routers.get(`/`, async (req, res) => {
@@ -65,10 +66,11 @@ routers.delete('/:id', async (req,res)=>{
 })
 
 routers.put('/:id', async (req,res)=>{
-    let prodfi = Product.findById(req.params.id)
-    if(!prodfi){
-        return res.status(400).send('Produit invalide')
+    if(!mongoose.isValidObjectId(req.params.id)){
+        res.status.apply(400).send('invalid Product id')
     }
+    const categofound = await Category.findById(req.body.category);
+    if(!categofound) return res.status(400).send('invalid Category')
     let produpd = await Product.findByIdAndUpdate(
         req.params.id,
         {
@@ -94,4 +96,17 @@ routers.put('/:id', async (req,res)=>{
 })
 
 
-module.exports = routers;  
+////// avoir le nombre de produits ///////////
+routers.get('/get/count', async (req, res)=>{
+    let prodCount = await Product.countDocuments({})
+    if(!prodCount){
+        return res.status(404).json({succes: false, mesage: 'le produit n\'existe pas' })
+    }else{
+        res.send({
+            count: prodCount
+        })
+    }
+})
+
+
+module.exports = routers;
