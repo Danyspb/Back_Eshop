@@ -6,6 +6,11 @@ function authJwt(){
     return jwt({
         secret,
         algorithms: ['ES256']
+    }).unless({
+        path: [
+            "/api/s1/users/login"
+        ]
     })
+   
 }
 module.exports = authJwt;

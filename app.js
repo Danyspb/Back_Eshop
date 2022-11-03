@@ -24,6 +24,7 @@ const errorCatch = require('./security/error');
 
 
 
+
 //middleware
 app.use(express.json());
 // middleware bodyparser
@@ -42,6 +43,7 @@ app.use(`${api}/products`, productsRouter);
 app.use(`${api}/users`, usersRouter);
 app.use(`${api}/orders`, ordersRouter);
 app.use(`${api}/categories`, categoriesRouter);
+
 
 
 
