@@ -6,7 +6,7 @@ const routers = express.Router();
 
 ///// get all users //////
 routers.get(`/`, async(req,res)=>{
-    const userList = await User.find();
+    const userList = await User.find().select('-passwordHash');
 
     if(!userList){
         res.status(500).json({succes: false})
@@ -37,5 +37,18 @@ routers.post('/', async(req, res)=>{
         return res.status(201).json({succes: true, message: 'utilisateur cree avec succes !!!'})
     }
 })
+
+
+routers.get('/:id', async(req,res)=>{
+    let finduser = await User.findById(req.params.id).select('-passwordHash');
+    if(!finduser){
+        return res.status(500).json({succes: false, message: 'error user not found'})
+    }else{
+        return res.status(200).json({succes: true, finduser})
+    }
+
+})
+
+
 
 module.exports = routers;
