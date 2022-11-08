@@ -1,10 +1,10 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
 const port = 3000;
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const cors = require('cors')
+const cors = require('cors');
 
 
 app.use(cors());
@@ -43,7 +43,6 @@ app.use(`${api}/products`, productsRouter);
 app.use(`${api}/users`, usersRouter);
 app.use(`${api}/orders`, ordersRouter);
 app.use(`${api}/categories`, categoriesRouter);
-
 
 
 

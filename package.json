@@ -4,6 +4,7 @@
   "description": "back-end of the eshop application",
   "main": "app.js",
   "scripts": {
+    "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Danyspb4ever",

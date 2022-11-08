@@ -66,7 +66,7 @@ routers.post('/login', async(req, res)=>{
                 },
                 mysect,
                 {
-                    expiresIn: '2d'
+                    expiresIn: '1h'
                 }
             )
             return res.status(200).send({user: userexist.email, token: token})
