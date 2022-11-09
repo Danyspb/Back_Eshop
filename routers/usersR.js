@@ -87,7 +87,8 @@ routers.post('/login', async(req, res)=>{
             let mysect= process.env.SEC_TOK;
             let token = jwt.sign(
                 {
-                    userId : userexist.id
+                    userId : userexist.id,
+                    isAdmin : userexist.isAdmin
                 },
                 mysect,
                 {
