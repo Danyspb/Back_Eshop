@@ -36,7 +36,7 @@ app.use(morgan('dev'));
 // middleware jwt 
 app.use(authJwt())
 // middleware for the errors
-app.use(errorCatch)
+//app.use(errorCatch)
 
 // middleware des Routes
 app.use(`${api}/products`, productsRouter);
