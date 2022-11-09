@@ -104,4 +104,25 @@ routers.post('/login', async(req, res)=>{
 })
 
 
+///// avoir le nombre d'utiliasteur dans la base de donnes/////
+routers.get('/get/count', async(req, res)=>{
+    let usercount = await User.countDocuments({})
+    if(!usercount){
+        return res.status(404).json({succes: true, message: 'il y\'a pas d\'utilisateur !!'})
+    }else{
+        res.status(200).json({succes: true, count: usercount})
+    }
+})
+
+
+routers.delete('/:id', async(req, res)=>{
+    let userdel = await User.findByIdAndRemove(req.params.id)
+    if(!userdel){
+        return res.status(404).json({succes: false, message: 'erreur lors de la suppresion du utilisateur!!!!!'})
+    }else{
+        res.status(200).json({succes: true, message: 'utilisateur supprimer avec succes !!1'})
+    }
+})
+
+
 module.exports = routers;
