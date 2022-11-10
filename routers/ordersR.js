@@ -6,12 +6,11 @@ const routers = express.Router();
 
 routers.get(`/`, async(req,res)=>{
     const orderList = await Order.find();
-
     if(!orderList){
-        res.status(500).json({succes: false})
+       return res.status(404).json({succes: false, message: 'Aucune commande trouve !!!'})
+    }else{
+       return res.status(200).json({succes: true, orderList})
     }
-
-    res.send(orderList)
 
 })
 
