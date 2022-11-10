@@ -3,10 +3,10 @@ const express = require('express');
 const { OrderItem } = require('../models/order-item');
 const routers = express.Router();
 
-
-
-routers.get(`/`, async(req,res)=>{
-    const orderList = await Order.find();
+                                        
+                                     // populate nous permet de choisir ce qu'on veux recuperer de user et
+routers.get(`/`, async(req,res)=>{   // sort -1 me permet de le trier du plus recent au plus ancien enregistrements
+    const orderList = await Order.find().populate('user','name').sort({'dateOrder': -1});
     if(!orderList){
        return res.status(404).json({succes: false, message: 'Aucune commande trouve !!!'})
     }else{
@@ -14,6 +14,10 @@ routers.get(`/`, async(req,res)=>{
     }
 
 })
+
+
+
+
 
 routers.post('/', async (req, res)=>{
    const orderItemsIds = Promise.all(req.body.orderItems.map(async order =>{
@@ -27,7 +31,6 @@ routers.post('/', async (req, res)=>{
    }))
 
    const comItemIdsResolve = await orderItemsIds;
-   
 
    let nouvOrder = new Order({
        orderItems: comItemIdsResolve,
@@ -47,6 +50,7 @@ routers.post('/', async (req, res)=>{
    }else{
       return res.status(201).json({succes: true, nouvOrder})
    }
-})
+}) 
+
 
 module.exports = routers;
