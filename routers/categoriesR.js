@@ -39,7 +39,7 @@ routers.delete('/:id', async (req,res)=>{
         }
     })
     .catch(err=>{
-        return res.status(400).json({succes: false, err})
+        return res.status(500).json({succes: false, err})
     })
 })
 

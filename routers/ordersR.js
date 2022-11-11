@@ -15,10 +15,6 @@ routers.get(`/`, async(req,res)=>{   // sort -1 me permet de le trier du plus re
 
 })
 
-
-
-
-
 routers.post('/', async (req, res)=>{
    const orderItemsIds = Promise.all(req.body.orderItems.map(async order =>{
       let nouOrItem = new OrderItem({
@@ -51,6 +47,22 @@ routers.post('/', async (req, res)=>{
       return res.status(201).json({succes: true, nouvOrder})
    }
 }) 
+
+routers.get('/:id', async (req, res)=>{
+   Order.findById(req.params.id).then(orderFound =>{
+      if(!orderFound){
+         return res.status(404).json({succes: false, message: 'aucune commande trouvee !!!!'})
+      }else{
+         return res.status(200).json({succes: true, orderFound})
+      }
+   }).catch(err =>{
+      return res.status(500).json({succes: false, message: 'arrete de faire de la merde !!!!'})
+   })
+   
+})
+
+
+
 
 
 module.exports = routers;
