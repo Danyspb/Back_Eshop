@@ -49,19 +49,21 @@ routers.post('/', async (req, res)=>{
 }) 
 
 routers.get('/:id', async (req, res)=>{
-   Order.findById(req.params.id).then(orderFound =>{
-      if(!orderFound){
+  let foundOrder = await Order.findById(req.params.id)
+   .populate('user', 'name')
+   .populate({
+      path: 'orderItems', populate: {
+         path: 'product', populate: 'category'}
+      })
+      if(!foundOrder){
          return res.status(404).json({succes: false, message: 'aucune commande trouvee !!!!'})
       }else{
-         return res.status(200).json({succes: true, orderFound})
+         return res.status(200).json({succes: true, foundOrder})
       }
-   }).catch(err =>{
-      return res.status(500).json({succes: false, message: 'arrete de faire de la merde !!!!'})
-   })
-   
+      
 })
 
-
+//  
 
 
 
