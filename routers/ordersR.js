@@ -1,6 +1,6 @@
 const {Order} = require('../models/order');
 const express = require('express');
-const { OrderItem, OrderItems } = require('../models/order-item');
+const { OrderItems } = require('../models/order-item');
 const routers = express.Router();
 
                                         
@@ -15,6 +15,27 @@ routers.get(`/`, async(req,res)=>{   // sort -1 me permet de le trier du plus re
 
 })
 
+
+
+routers.delete('/:id', async (req, res)=>{
+   Order.findByIdAndRemove(req.params.id).then(async order =>{
+      if(order){
+         order.orderItems.map(async (ordIt) => {
+            await OrderItems.findByIdAndRemove(ordIt);
+         })
+         return res.status(200).json({succes: true, message: 'order delete with succes !!'})
+      }else{
+         return res.status(404).json({succes: false, message: 'Error Order not found !!!'})     }
+   })
+   .catch(err =>{
+      return res.status(500).json({succes: false, message: 'Error arrete de faire de la merde !!!! '})
+   })
+})
+
+
+
+
+
 routers.post('/', async (req, res)=>{
    const orderItemsIds = Promise.all(req.body.orderItems.map(async order =>{
       let nouOrItem = new OrderItems({
@@ -26,6 +47,8 @@ routers.post('/', async (req, res)=>{
    }))
 
    const comItemIdsResolve = await orderItemsIds;
+
+   
 
    let nouvOrder = new Order ({
        orderItems: comItemIdsResolve,
@@ -76,6 +99,8 @@ routers.put('/:id' , async (req,res)=>{
        return res.status(200).json({succes: true, orderUp})
    }
 })
+
+
 
 
 
