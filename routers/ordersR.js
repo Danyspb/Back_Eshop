@@ -1,12 +1,12 @@
 const {Order} = require('../models/order');
 const express = require('express');
-const { OrderItem } = require('../models/order-item');
+const { OrderItem, OrderItems } = require('../models/order-item');
 const routers = express.Router();
 
                                         
                                      // populate nous permet de choisir ce qu'on veux recuperer de user et
 routers.get(`/`, async(req,res)=>{   // sort -1 me permet de le trier du plus recent au plus ancien enregistrements
-    const orderList = await Order.find().populate('user','name').sort({'dateOrder': -1});
+    const orderList = await Order.find().populate('user','name').sort({'dateOrder': 'ascending'});
     if(!orderList){
        return res.status(404).json({succes: false, message: 'Aucune commande trouve !!!'})
     }else{
@@ -17,18 +17,17 @@ routers.get(`/`, async(req,res)=>{   // sort -1 me permet de le trier du plus re
 
 routers.post('/', async (req, res)=>{
    const orderItemsIds = Promise.all(req.body.orderItems.map(async order =>{
-      let nouOrItem = new OrderItem({
+      let nouOrItem = new OrderItems({
          quantity: order.quantity,
          product: order.product
       })
       nouOrItem = await nouOrItem.save();
-
       return nouOrItem._id;
    }))
 
    const comItemIdsResolve = await orderItemsIds;
 
-   let nouvOrder = new Order({
+   let nouvOrder = new Order ({
        orderItems: comItemIdsResolve,
        shippingAddresse1: req.body.shippingAddresse1,
        shippingAddresse2: req.body.shippingAddresse2,
@@ -63,7 +62,21 @@ routers.get('/:id', async (req, res)=>{
       
 })
 
-//  
+routers.put('/:id' , async (req,res)=>{
+   let orderUp = await Order.findByIdAndUpdate(
+       req.params.id,
+           {
+            status: req.body.status 
+           },
+           {new : true}
+       )
+   if(!orderUp){
+       return res.status(404).json({succes: false, message: 'aucune commande trouve !!'})
+   }else{
+       return res.status(200).json({succes: true, orderUp})
+   }
+})
+
 
 
 
