@@ -120,5 +120,18 @@ routers.get('/get/ventetotal', async(req, res)=>{
 
 
 
+routers.get('/get/count', async (req, res)=>{
+   let orderCount = await Order.countDocuments({})
+   if(!orderCount){
+       return res.status(404).json({succes: false, mesage: 'le produit n\'existe pas' })
+   }else{
+       res.send({
+           count: orderCount
+       })
+   }
+})
+
+
+
 
 module.exports = routers;
