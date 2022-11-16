@@ -107,6 +107,17 @@ routers.put('/:id' , async (req,res)=>{
    }
 })
 
+routers.get('/get/ventetotal', async(req, res)=>{
+   const venTo = await Order.aggregate([
+      { $group: { _id: null, total: { $sum: '$totalPrice' } } }
+   ])
+   if(!venTo){
+      return res.status(400).json({succes: false, message: 'La somme total ne peut pas etre genere'})
+   }else{
+      return res.status(200).send({totalVente:  venTo.pop().total})
+   }
+})
+
 
 
 
