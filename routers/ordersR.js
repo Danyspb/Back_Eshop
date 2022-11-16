@@ -6,7 +6,7 @@ const routers = express.Router();
                                         
                                      // populate nous permet de choisir ce qu'on veux recuperer de user et
 routers.get(`/`, async(req,res)=>{   // sort -1 me permet de le trier du plus recent au plus ancien enregistrements
-    const orderList = await Order.find().populate('user','name').sort({'dateOrder': 'ascending'});
+    const orderList = await Order.find().populate('user','name').sort({dateOrdered: -1});
     if(!orderList){
        return res.status(404).json({succes: false, message: 'Aucune commande trouve !!!'})
     }else{
@@ -34,8 +34,6 @@ routers.delete('/:id', async (req, res)=>{
 
 
 
-
-
 routers.post('/', async (req, res)=>{
    const orderItemsIds = Promise.all(req.body.orderItems.map(async order =>{
       let nouOrItem = new OrderItems({
@@ -43,12 +41,18 @@ routers.post('/', async (req, res)=>{
          product: order.product
       })
       nouOrItem = await nouOrItem.save();
-      return nouOrItem._id;
+      return nouOrItem.id; 
    }))
 
    const comItemIdsResolve = await orderItemsIds;
 
+   const prixTotal = await Promise.all(comItemIdsResolve.map(async orderItId =>{
+      const orderItem = await OrderItems.findById(orderItId).populate('product', 'price');
+      const prix = orderItem.product.price * orderItem.quantity; 
+      return prix; 
+   }))
    
+   const som = Number(prixTotal);
 
    let nouvOrder = new Order ({
        orderItems: comItemIdsResolve,
@@ -59,7 +63,7 @@ routers.post('/', async (req, res)=>{
        phone: req.body.phone,
        status: req.body.status,
        zip: req.body.zip,
-       totalPrice: req.body.totalPrice,
+       totalPrice: som,
        user: req.body.user
    })
       nouvOrder = await nouvOrder.save();
@@ -69,6 +73,8 @@ routers.post('/', async (req, res)=>{
       return res.status(201).json({succes: true, nouvOrder})
    }
 }) 
+
+
 
 routers.get('/:id', async (req, res)=>{
   let foundOrder = await Order.findById(req.params.id)
@@ -82,8 +88,9 @@ routers.get('/:id', async (req, res)=>{
       }else{
          return res.status(200).json({succes: true, foundOrder})
       }
-      
 })
+
+
 
 routers.put('/:id' , async (req,res)=>{
    let orderUp = await Order.findByIdAndUpdate(
@@ -99,8 +106,6 @@ routers.put('/:id' , async (req,res)=>{
        return res.status(200).json({succes: true, orderUp})
    }
 })
-
-
 
 
 
