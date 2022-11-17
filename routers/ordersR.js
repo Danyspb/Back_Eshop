@@ -91,7 +91,7 @@ routers.get('/:id', async (req, res)=>{
 })
 
 
-
+/////////// mise a jour de la commande /////////
 routers.put('/:id' , async (req,res)=>{
    let orderUp = await Order.findByIdAndUpdate(
        req.params.id,
@@ -107,6 +107,7 @@ routers.put('/:id' , async (req,res)=>{
    }
 })
 
+////////// savoir la somme de la vente total grace au commmande/////////
 routers.get('/get/ventetotal', async(req, res)=>{
    const venTo = await Order.aggregate([
       { $group: { _id: null, total: { $sum: '$totalPrice' } } }
@@ -119,7 +120,7 @@ routers.get('/get/ventetotal', async(req, res)=>{
 })
 
 
-
+///////// savoir le nombre de commmande ////////////////
 routers.get('/get/count', async (req, res)=>{
    let orderCount = await Order.countDocuments({})
    if(!orderCount){
@@ -128,6 +129,22 @@ routers.get('/get/count', async (req, res)=>{
        res.send({
            count: orderCount
        })
+   }
+})
+
+
+///// recureper les commmandes faites par les utilisateurs ///////////
+routers.get('/get/usersorders/:userid', async(req, res)=>{
+   const orderUserList = await Order.find({user: req.params.userid})
+   .populate({
+      path: 'orderItems', populate: {
+         path: 'product', populate: 'category'
+      }
+   }).sort({dateOrdered: -1})
+   if(!orderUserList){
+      return res.status(404).json({succes: false, message: 'order not found'})
+   }else{
+      return res.status(202).json({succes: true, orderUserList })
    }
 })
 
