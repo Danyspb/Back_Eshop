@@ -3,6 +3,7 @@ const express = require('express');
 const { OrderItems } = require('../models/order-item');
 const routers = express.Router();
 
+
                                         
                                      // populate nous permet de choisir ce qu'on veux recuperer de user et
 routers.get(`/`, async(req,res)=>{   // sort -1 me permet de le trier du plus recent au plus ancien enregistrements
@@ -131,6 +132,8 @@ routers.get('/get/count', async (req, res)=>{
        })
    }
 })
+
+
 
 
 ///// recureper les commmandes faites par les utilisateurs ///////////
