@@ -68,7 +68,7 @@ routers.post(`/`, uploadOption.single('image'), async (req, res) => {
     if(!file){
         return res.status(400).send('No File')
     }
-    const fileName = req.file.filename
+    const fileName = req.file.filename;
     const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
     const product = new Product({
         name: req.body.name,
@@ -113,19 +113,35 @@ routers.delete('/:id', async (req,res)=>{
 
 })
 
-routers.put('/:id',  async (req,res)=>{
+
+routers.put('/:id', uploadOption.single('image'), async (req,res)=>{
     if(!mongoose.isValidObjectId(req.params.id)){
         res.status.apply(400).send('invalid Product id')
     }
     const categofound = await Category.findById(req.body.category);
-    if(!categofound) return res.status(400).send('invalid Category')
+    if(!categofound){return res.status(400).send('invalid Category')}
+
+    const producF = await Product.findById(req.params.id);
+    if(!producF){return res.status(400).send('Invalid Product')}
+
+    const file = req.file;
+    let imagepath ;
+
+    if(file){
+        const fileName = req.file.filename;
+        const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+        imagepath = `${basePath}${fileName}`
+    }else{
+        imagepath = producF.image;
+    }
+
     let produpd = await Product.findByIdAndUpdate(
         req.params.id,
         {
             name: req.body.name,
             description: req.body.description,
             richDescription: req.body.richDescription,
-            image: req.body.image,
+            image: imagepath,
             brand: req.body.brand,
             price: req.body.price,
             category: req.body.category,
