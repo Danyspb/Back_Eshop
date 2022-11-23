@@ -160,6 +160,36 @@ routers.put('/:id', uploadOption.single('image'), async (req,res)=>{
 })
 
 
+routers.put('/gallery-images/:id', uploadOption.array('images', 5), async(req, res)=>{
+    if(!mongoose.isValidObjectId(req.params.id)){
+        res.status.apply(400).send('invalid Product id')
+    }
+    
+    const files = req.files
+    let imagesPaths = [];
+    const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
+    if(files){
+       files.map(file=>{
+        imagesPaths.push(`${basePath}${file.filename}`);
+       })
+    }
+    
+    let pro = await Product.findByIdAndUpdate(
+        req.params.id,
+        {
+            images: imagesPaths
+        },
+        {new : true}
+    )
+    if(!pro){
+        return res.status(500).send('the product cannot be updated !!!!')
+    }else{
+        return res.send(pro);
+    }
+
+})
+
+
 ////// avoir le nombre de produits ///////////
 routers.get('/get/count', async (req, res)=>{
     let prodCount = await Product.countDocuments({})
