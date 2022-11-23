@@ -64,6 +64,10 @@ routers.post(`/`, uploadOption.single('image'), async (req, res) => {
     if(!categoryatrouve){
         return res.status(400).send('Invalid Category')
     }
+    const file = req.file;
+    if(!file){
+        return res.status(400).send('No File')
+    }
     const fileName = req.file.filename
     const basePath = `${req.protocol}://${req.get('host')}/public/upload/`;
     const product = new Product({
