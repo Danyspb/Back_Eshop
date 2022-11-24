@@ -182,7 +182,7 @@ routers.put('/gallery-images/:id', uploadOption.array('images', 5), async(req, r
         {new : true}
     )
     if(!pro){
-        return res.status(500).send('the product cannot be updated !!!!')
+        return res.status(404).send('the product cannot be updated !!!!')
     }else{
         return res.send(pro);
     }
