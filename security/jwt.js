@@ -8,6 +8,7 @@ function authJwt(){
     return jwt({
         secret,
         algorithms: ['HS256'],
+        isRevoked: isRevoked
         
     }).unless({
         path: [
