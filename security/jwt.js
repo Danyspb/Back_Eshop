@@ -8,9 +8,8 @@ function authJwt(){
     return jwt({
         secret,
         algorithms: ['HS256'],
-        isRevoked: isRevoked
-    })
-    .unless({
+        
+    }).unless({
         path: [
             {url: /\/public\/upload(.*)/, methods: ['GET', 'OPTIONS']},
             {url: /\/api\/s1\/categories(.*)/, methods: ['GET', 'OPTIONS']},

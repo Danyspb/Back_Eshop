@@ -31,6 +31,8 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+
 // middleware morgane
 app.use(morgan('dev'));
 // middleware jwt 
